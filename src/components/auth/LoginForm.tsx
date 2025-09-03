@@ -1,24 +1,56 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../ui/input/Input";
-
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginFormData } from "../../schemas/auth";
+import { useLoginMutation } from "../../store/api/baseApi";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../store/authSlice";
 export default function LoginForm() {
+  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  //useForm bao gồm register, handleSubmit, và khi formState có lỗi trả ra errors
+
+  const [login] = useLoginMutation();
+  const navigate = useNavigate();
+  const onSubmit = async (formData: LoginFormData) => {
+    const result = await login(formData).unwrap();
+    dispatch(
+      setAuth({
+        accessToken: result.data.accessToken,
+        refreshToken: result.data.refreshToken,
+      })
+    );
+    navigate("/app/dashboard");
+
+    // console.log("data", formData);
+  };
   return (
-    <form className="space-y-4">
+    <form className="space-y-4 " onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <Input type="text" value="email" label="Email" required />
+        <Input
+          {...register("email")}
+          label="Email"
+          required
+          error={errors.email?.message}
+        />
       </div>
       <div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Password<span className="text-red-500">*</span>
-          </label>
-          <input
-            className="mt-1 flex h-10 w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50   "
-            type="password"
-            name="password"
-          />
-        </div>
+        <Input
+          {...register("password")}
+          type="password"
+          label="Password"
+          required
+          error={errors.password?.message}
+        />
       </div>
       <button
         type="submit"
