@@ -7,11 +7,14 @@ import { loginSchema, type LoginFormData } from "../../schemas/auth";
 import { useLoginMutation } from "../../store/api/baseApi";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../store/authSlice";
+import { toast } from "sonner";
+
 export default function LoginForm() {
   const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -22,15 +25,25 @@ export default function LoginForm() {
   const [login] = useLoginMutation();
   const navigate = useNavigate();
   const onSubmit = async (formData: LoginFormData) => {
-    const result = await login(formData).unwrap();
-    dispatch(
-      setAuth({
-        accessToken: result.data.accessToken,
-        refreshToken: result.data.refreshToken,
-      })
-    );
-    navigate("/app/dashboard");
-
+    try {
+      const result = await login(formData).unwrap();
+      dispatch(
+        setAuth({
+          accessToken: result.data.accessToken,
+          refreshToken: result.data.refreshToken,
+        })
+      );
+      toast.success(result?.message || "Đăng nhập thành công!");
+      navigate("/app/dashboard");
+    } catch (error: any) {
+      // setError("root", {
+      //   type: "manual",
+      //   message: error.data?.message || "Đăng nhập thất bại, Vui lòng thử lại",
+      // });
+      toast.error(
+        error.data?.message || "Đăng nhập thất bại, Vui lòng thử lại"
+      );
+    }
     // console.log("data", formData);
   };
   return (
@@ -58,6 +71,9 @@ export default function LoginForm() {
       >
         Sign In
       </button>
+      {/* {errors.root?.message && (
+        <span className="text-red-400 text-xs">{errors.root?.message}</span>
+      )} */}
       <p className="mt-2 text-center text-sm text-gray-600">
         Don't have an account?{" "}
         <Link
