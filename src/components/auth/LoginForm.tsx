@@ -22,8 +22,10 @@ export default function LoginForm() {
 
   //useForm bao gồm register, handleSubmit, và khi formState có lỗi trả ra errors
 
-  const [login] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
+
   const navigate = useNavigate();
+
   const onSubmit = async (formData: LoginFormData) => {
     try {
       const result = await login(formData).unwrap();
@@ -67,9 +69,10 @@ export default function LoginForm() {
       </div>
       <button
         type="submit"
+        disabled={isLoading}
         className="cursor-pointer inline-flex items-center justify-center rounded-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2 w-full"
       >
-        Sign In
+        {isLoading ? " Signing..." : "Sign In"}
       </button>
       {/* {errors.root?.message && (
         <span className="text-red-400 text-xs">{errors.root?.message}</span>

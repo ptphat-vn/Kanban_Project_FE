@@ -9,6 +9,7 @@ import {
 import type { APIResponse, AuthResponse } from "@/types/response.type";
 import type { RootState } from "../store";
 import { logout, setAuth } from "@/store/authSlice";
+import type { User } from "@/types/user.type";
 interface LoginRequest {
   email: string;
   password: string;
@@ -24,6 +25,14 @@ interface RefreshTokenResponse {
     refreshToken: string;
   };
 }
+
+interface RegisterRequest {
+  name: string;
+  phone: string;
+  email: string;
+  password: string;
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
   prepareHeaders: (headers, { getState }) => {
@@ -95,7 +104,16 @@ export const baseApi = createApi({
         body: loginData,
       }),
     }),
-    getProfile: builder.query({
+    register: builder.mutation<APIResponse<User>, RegisterRequest>({
+      //mutation là biến đổi
+      //mutation: hành động để hệ thống gửi dữ liệu cho BE
+      query: (userData) => ({
+        url: "/auth/register",
+        method: "POST",
+        body: userData,
+      }),
+    }),
+    getProfile: builder.query<APIResponse<User>, void>({
       //query là lấy
       query: () => ({
         url: "/auth/me",
@@ -111,5 +129,9 @@ export const baseApi = createApi({
   }),
 });
 
-export const { useLoginMutation, useGetProfileQuery, useLogoutMutation } =
-  baseApi;
+export const {
+  useLoginMutation,
+  useGetProfileQuery,
+  useLogoutMutation,
+  useRegisterMutation,
+} = baseApi;
