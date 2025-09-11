@@ -10,6 +10,7 @@ import type { APIResponse, AuthResponse } from "@/types/response.type";
 import type { RootState } from "../store";
 import { logout, setAuth } from "@/store/authSlice";
 import type { User } from "@/types/user.type";
+import type { Board, BoardListResponse } from "@/types/board.type";
 interface LoginRequest {
   email: string;
   password: string;
@@ -31,6 +32,12 @@ interface RegisterRequest {
   phone: string;
   email: string;
   password: string;
+}
+
+interface CreateBoardRequest {
+  title: string;
+  description?: string;
+  color: string;
 }
 
 const baseQuery = fetchBaseQuery({
@@ -94,6 +101,7 @@ export const baseApi = createApi({
   reducerPath: "api",
   //gọi baseQuery là customBaseQuery(agrs, api, extraOptions)
   baseQuery: customBaseQuery,
+  tagTypes: ["User", "Board"],
   endpoints: (builder) => ({
     login: builder.mutation<APIResponse<AuthResponse>, LoginRequest>({
       //mutation là biến đổi
@@ -126,6 +134,21 @@ export const baseApi = createApi({
         method: "POST",
       }),
     }),
+    getBoards: builder.query<APIResponse<BoardListResponse>, void>({
+      query: () => ({
+        url: "/boards",
+      }),
+      providesTags: [{ type: "Board", id: "LIST" }], //lấy danh sách board, id đặt gì cx đc
+      //dựa vào tag này nó sẽ không gọi lại API, nếu mà dữ liệu thay đổi mới gọi lại API
+    }),
+    createBoards: builder.mutation<APIResponse<Board>, CreateBoardRequest>({
+      query: (boardData) => ({
+        url: "/boards",
+        method: "POST",
+        body: boardData,
+      }),
+      invalidatesTags: [{ type: "Board", id: "LIST" }],
+    }),
   }),
 });
 
@@ -134,4 +157,6 @@ export const {
   useGetProfileQuery,
   useLogoutMutation,
   useRegisterMutation,
+  useGetBoardsQuery,
+  useCreateBoardsMutation,
 } = baseApi;

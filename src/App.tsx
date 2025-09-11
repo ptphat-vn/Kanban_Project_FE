@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
 import { useAuth } from "./hooks/useAuth";
 import NotFound from "./pages/NotFound";
+import UserProfile from "./pages/UserProfile";
 function RootRedirect() {
   const { isAuthenticated } = useAuth();
   if (isAuthenticated) return <Navigate to={"/app/dashboard"} />;
@@ -46,7 +47,13 @@ const router = createBrowserRouter([
     children: [
       {
         element: <ProtectedRoute />,
-        children: [{ path: "dashboard", element: <Dashboard /> }],
+        children: [
+          { path: "dashboard", element: <Dashboard /> },
+          {
+            path: "profile",
+            element: <UserProfile />,
+          },
+        ],
       },
     ],
   },
