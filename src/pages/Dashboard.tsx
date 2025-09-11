@@ -1,10 +1,12 @@
 import BoardItems from "@/components/features/boards/BoardItems";
 import BoardList from "@/components/features/boards/BoardList";
 import Badge from "@/components/ui/badge/Badge";
+import { useAuth } from "@/hooks/useAuth";
 import { Grid2X2, SettingsIcon, UserIcon } from "lucide-react";
 import React from "react";
 
 export default function Dashboard() {
+  const { user } = useAuth();
   return (
     <div className="space-y-8">
       <section>
@@ -16,10 +18,12 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-lg">K</span>
+                  <span className="text-white font-bold text-lg">
+                    {user ? user?.data.name.charAt(0).toUpperCase() : "U"}
+                  </span>
                 </div>
                 <span className="font-semibold text-gray-800 text-lg">
-                  Sơn PM Workspace
+                  {user?.data.name} Workspace
                 </span>
               </div>
               <div className="flex items-center space-x-3">

@@ -1,6 +1,8 @@
+import { useAuth } from "@/hooks/useAuth";
 import React from "react";
 
 export default function SideBar() {
+  const { user } = useAuth();
   return (
     <aside className="w-80 bg-white border-r border-gray-200 min-h-screen">
       <div className="p-4">
@@ -57,9 +59,11 @@ export default function SideBar() {
           </h3>
           <div className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-50 rounded cursor-pointer">
             <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-semibold text-sm">K</span>
+              <span className="text-white font-semibold text-sm">
+                {user ? user?.data.name.charAt(0).toUpperCase() : "U"}
+              </span>
             </div>
-            <span className="text-sm">Sơn PM Workspace</span>
+            <span className="text-sm">{user?.data.name} Workspace</span>
             <div
               className="flex items-center justify-center"
               style={{ width: 24, height: 24, cursor: "default" }}
