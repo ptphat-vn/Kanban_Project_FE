@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   DropdownMenu,
@@ -8,9 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import SearchResult from "../features/search/SearchResult";
 
 export default function Header() {
   const { logout, user } = useAuth();
+  const [isOpenSearch, setIsOpenSearch] = useState(false);
+
   return (
     <header className="bg-white text-gray-900 border-b border-gray-200 sticky top-0 z-50">
       <div className="flex items-center justify-between h-14 px-4">
@@ -53,6 +56,7 @@ export default function Header() {
                 </div>
               </div>
               <input
+                onClick={() => setIsOpenSearch(true)}
                 placeholder="Search"
                 className="pr-10 flex h-10 w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 pl-10  "
                 type="text"
@@ -76,7 +80,7 @@ export default function Header() {
                 data-slot="dropdown-menu-trigger"
               >
                 <span className="text-white font-semibold">
-                  {user?.data.name.charAt(0).toUpperCase() || "U"}
+                  {user?.data?.name.charAt(0).toUpperCase() || "U"}
                 </span>
               </button>
             </DropdownMenuTrigger>
@@ -95,6 +99,10 @@ export default function Header() {
           </DropdownMenu>
         </div>
       </div>
+      <SearchResult
+        isOpen={isOpenSearch}
+        onClose={() => setIsOpenSearch(false)}
+      />
     </header>
   );
 }

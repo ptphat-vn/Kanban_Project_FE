@@ -7,7 +7,11 @@ import CreateBoardPopover from "./CreateBoardPopover";
 import { toast } from "sonner";
 
 export default function BoardList() {
-  const { data, isLoading, error } = useGetBoardsQuery();
+  const { data, isLoading, error } = useGetBoardsQuery({
+    page: 1,
+    limit: 10,
+    search: "",
+  });
   const boards = data?.data?.boards || [];
   // console.log(boards);
   const [createBoard] = useCreateBoardsMutation();

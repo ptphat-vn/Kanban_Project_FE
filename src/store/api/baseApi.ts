@@ -134,10 +134,14 @@ export const baseApi = createApi({
         method: "POST",
       }),
     }),
-    getBoards: builder.query<APIResponse<BoardListResponse>, void>({
-      query: () => ({
-        url: "/boards",
-      }),
+    getBoards: builder.query<
+      APIResponse<BoardListResponse>,
+      { page?: number; limit?: number; search?: string }
+    >({
+      query: (params = { page: 1, limit: 10, search: "" }) => {
+        const { page, limit, search } = params;
+        return `/boards?page=${page}&limit=${limit}&search=${search}`;
+      },
       providesTags: [{ type: "Board", id: "LIST" }], //lấy danh sách board, id đặt gì cx đc
       //dựa vào tag này nó sẽ không gọi lại API, nếu mà dữ liệu thay đổi mới gọi lại API
     }),
