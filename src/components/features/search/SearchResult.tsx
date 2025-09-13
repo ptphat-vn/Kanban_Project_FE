@@ -1,5 +1,6 @@
-import { useGetBoardsQuery } from "@/store/api/baseApi";
-import { useEffect, useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useGetBoardsQuery } from "@/store/api/boardApi";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface SearchResultProps {
@@ -10,21 +11,15 @@ interface SearchResultProps {
 export default function SearchResult({ isOpen, onClose }: SearchResultProps) {
   const [searchValue, setSearchValue] = useState("");
   //   console.log(searchValue);
-  const [debounceSearch, setDebounceSearch] = useState("");
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebounceSearch(searchValue);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchValue]);
+  const debounceSearch = useDebounce(searchValue, 300);
   const {
     data: searchData,
     isLoading,
     error,
   } = useGetBoardsQuery({ page: 1, limit: 5, search: debounceSearch });
-
-  const result = searchData?.data.boards || [];
+  //debounce là cái trung gian, sau 3s mới gọi thêm
+  const boards = searchData?.data.boards || [];
 
   if (!isOpen) return null;
 
@@ -54,7 +49,7 @@ export default function SearchResult({ isOpen, onClose }: SearchResultProps) {
               <circle cx={11} cy={11} r={8} />
             </svg>
             <input
-              placeholder="Search Trello"
+              placeholder="Search Kanban"
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               type="text"
               value={searchValue}
@@ -67,7 +62,7 @@ export default function SearchResult({ isOpen, onClose }: SearchResultProps) {
           <div className="p-4">
             <div className="space-y-2">
               <h3 className="text-lg font-medium text-gray-900 ">Boards</h3>
-              {result.map((board) => (
+              {boards.map((board) => (
                 <Link
                   key={board.id}
                   className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
@@ -91,6 +86,11 @@ export default function SearchResult({ isOpen, onClose }: SearchResultProps) {
                   </div>
                 </Link>
               ))}
+              {boards.length === 0 && (
+                <p className="text-center italic text-gray-500">
+                  No Boards result....
+                </p>
+              )}
             </div>
           </div>
         </div>

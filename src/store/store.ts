@@ -15,6 +15,7 @@ import {
 import authSlice, { logout } from "./authSlice";
 import { baseApi } from "./api/baseApi";
 import storage from "redux-persist/lib/storage";
+import { boardApi } from "./api/boardApi";
 
 const listenerMiddleware = createListenerMiddleware();
 // lang nghe xem co phai action logout hay khong

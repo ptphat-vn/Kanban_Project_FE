@@ -7,6 +7,7 @@ export interface Board {
   ownerId: number;
   createAt: string;
   updateAt: string;
+  column: [];
   owner: {
     id: number;
     name: string;

@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Grid2X2, SettingsIcon, UserIcon } from "lucide-react";
 import React from "react";
 
-export default function Dashboard() {
+export default function Board() {
   const { user } = useAuth();
   return (
     <div className="space-y-8">

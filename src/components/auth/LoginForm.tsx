@@ -36,7 +36,7 @@ export default function LoginForm() {
         })
       );
       toast.success(result?.message || "Đăng nhập thành công!");
-      navigate("/app/dashboard");
+      navigate("/app/boards");
     } catch (error: any) {
       // setError("root", {
       //   type: "manual",

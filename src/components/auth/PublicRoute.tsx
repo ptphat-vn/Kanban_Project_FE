@@ -4,6 +4,6 @@ import { Navigate, Outlet } from "react-router-dom";
 
 export default function PublicRoute() {
   const { isAuthenticated } = useAuth();
-  if (isAuthenticated) return <Navigate to={"/app/dashboard"} />;
+  if (isAuthenticated) return <Navigate to={"/app/boards"} />;
   return <Outlet />;
 }

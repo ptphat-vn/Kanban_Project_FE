@@ -8,15 +8,17 @@ import {
 import RegisterPage from "./pages/RegisterPage";
 import AuthLayout from "./components/layouts/AuthLayout";
 import MainLayout from "@/components/layouts/MainLayout";
-import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
 import { useAuth } from "./hooks/useAuth";
 import NotFound from "./pages/NotFound";
 import UserProfile from "./pages/UserProfile";
+import Board from "./pages/Board";
+import BoardDetailPage from "./pages/BoardDetailPage";
+import DefaultLayout from "./components/layouts/DefaultLayout";
 function RootRedirect() {
   const { isAuthenticated } = useAuth();
-  if (isAuthenticated) return <Navigate to={"/app/dashboard"} />;
+  if (isAuthenticated) return <Navigate to={"/app/boards"} />;
   if (!isAuthenticated) return <Navigate to={"/auth/login"} />;
 }
 const router = createBrowserRouter([
@@ -48,7 +50,7 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { path: "dashboard", element: <Dashboard /> },
+          { path: "boards", element: <Board /> },
           {
             path: "profile",
             element: <UserProfile />,
@@ -57,7 +59,16 @@ const router = createBrowserRouter([
       },
     ],
   },
-
+  {
+    path: "/app/boards/:id",
+    element: <DefaultLayout />,
+    children: [
+      {
+        element: <ProtectedRoute />,
+        children: [{ index: true, element: <BoardDetailPage /> }],
+      },
+    ],
+  },
   {
     path: "*",
     element: <NotFound />,
